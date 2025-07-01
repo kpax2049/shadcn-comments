@@ -1,7 +1,8 @@
-
 export type User = {
-  id: string,
-  fullName: string,
-  userProfile?: string,
-  avatarUrl?: string,
-}
+  id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+};

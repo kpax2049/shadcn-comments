@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from 'react';
 import {
   BlockTypeSelect,
   BoldItalicUnderlineToggles,
@@ -18,40 +18,40 @@ import {
   tablePlugin,
   thematicBreakPlugin,
   toolbarPlugin,
-  UndoRedo
-} from "@mdxeditor/editor";
-import {Avatar, AvatarFallback, AvatarImage} from "./Avatar";
-import {Button} from "./Button";
-import {User} from "../types/user";
+  UndoRedo,
+} from '@mdxeditor/editor';
+import { Avatar, AvatarFallback, AvatarImage } from './Avatar';
+import { Button } from './Button';
+import { User } from '../types/user';
 
 interface EditorCommentProps {
   value?: string;
   onChange?: (val: string) => void;
-  placeholder?: string,
+  placeholder?: string;
   onUpload?: (image: File) => Promise<string>;
-  theme: 'light' | 'dark' | 'system',
+  theme: 'light' | 'dark' | 'system';
   currentUser: User;
 }
 
 export const EditorComment = ({
-                                value = '', onChange = () => {
-  },
-                                placeholder = 'Add your comment here...',
-                                onUpload,
-                                theme,
-                                currentUser,
-                              }: EditorCommentProps) => {
-  const [tempValue, setTempValue] = useState('')
+  value = '',
+  onChange = () => {},
+  placeholder = 'Add your comment here...',
+  onUpload,
+  theme,
+  currentUser,
+}: EditorCommentProps) => {
+  const [tempValue, setTempValue] = useState('');
 
   useEffect(() => {
-    setTempValue(value)
-  }, [value])
+    setTempValue(value);
+  }, [value]);
 
   return (
     <div className={`flex flex-col gap-2 w-full editor-content-container`}>
       <div className={`flex gap-4 w-full`}>
         <Avatar className={'w-[32px] h-[32px]'}>
-          <AvatarImage src={currentUser?.avatarUrl}/>
+          <AvatarImage src={'https://github.com/shadcn.png'} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
@@ -67,19 +67,19 @@ export const EditorComment = ({
                 toolbarContents: () => (
                   <div className={'flex gap-1'}>
                     {' '}
-                    <UndoRedo/>
-                    <ListsToggle/>
-                    <Separator/>
-                    <InsertImage/>
+                    <UndoRedo />
+                    <ListsToggle />
+                    <Separator />
+                    <InsertImage />
                     {/*<Select  items={}/>*/}
                     <div className={'hidden md:flex gap-1'}>
-                      <BoldItalicUnderlineToggles/>
-                      <BlockTypeSelect/>
-                      <CreateLink/>
-                      <InsertTable/>
+                      <BoldItalicUnderlineToggles />
+                      <BlockTypeSelect />
+                      <CreateLink />
+                      <InsertTable />
                     </div>
                   </div>
-                )
+                ),
               }),
               headingsPlugin(),
               listsPlugin(),
@@ -97,11 +97,17 @@ export const EditorComment = ({
         </div>
       </div>
       <div className={'flex justify-end'}>
-        <Button disabled={!tempValue} onClick={() => {
-          onChange(tempValue)
-          setTempValue('')
-        }} className={'h-8'}>Comment</Button>
+        <Button
+          disabled={!tempValue}
+          onClick={() => {
+            onChange(tempValue);
+            setTempValue('');
+          }}
+          className={'h-8'}
+        >
+          Comment
+        </Button>
       </div>
     </div>
-  )
-}
+  );
+};

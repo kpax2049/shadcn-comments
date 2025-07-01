@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from 'react';
 import {
   BlockTypeSelect,
   BoldItalicUnderlineToggles,
@@ -18,29 +18,29 @@ import {
   tablePlugin,
   thematicBreakPlugin,
   toolbarPlugin,
-  UndoRedo
-} from "@mdxeditor/editor";
-import {Button} from "./Button";
-import {User} from "../types/user";
+  UndoRedo,
+} from '@mdxeditor/editor';
+import { Button } from './Button';
+import { User } from '../types/user';
 
 interface EditorCommentProps {
   value?: string;
   onChange?: (val: string) => void;
-  placeholder?: string,
+  placeholder?: string;
   onUpload?: (image: File) => Promise<string>;
-  theme: 'light' | 'dark' | 'system',
+  theme: 'light' | 'dark' | 'system';
   currentUser: User;
 }
 
 export const EditingEditorComment = ({
-                                       value = '', onChange = () => {
-  },
-                                       placeholder = 'Add your comment here...',
-                                       onUpload,
-                                       theme,
-                                       currentUser,
-                                     }: EditorCommentProps) => {
-  const [tempValue, setTempValue] = useState(value)
+  value = '',
+  onChange = () => {},
+  placeholder = 'Add your comment here...',
+  onUpload,
+  theme,
+  currentUser,
+}: EditorCommentProps) => {
+  const [tempValue, setTempValue] = useState(value);
 
   return (
     <div className={`flex flex-col gap-2 w-full editor-content-container`}>
@@ -57,19 +57,19 @@ export const EditingEditorComment = ({
                 toolbarContents: () => (
                   <div className={'flex gap-1'}>
                     {' '}
-                    <UndoRedo/>
-                    <ListsToggle/>
-                    <Separator/>
-                    <InsertImage/>
+                    <UndoRedo />
+                    <ListsToggle />
+                    <Separator />
+                    <InsertImage />
                     {/*<Select  items={}/>*/}
                     <div className={'hidden md:flex gap-1'}>
-                      <BoldItalicUnderlineToggles/>
-                      <BlockTypeSelect/>
-                      <CreateLink/>
-                      <InsertTable/>
+                      <BoldItalicUnderlineToggles />
+                      <BlockTypeSelect />
+                      <CreateLink />
+                      <InsertTable />
                     </div>
                   </div>
-                )
+                ),
               }),
               headingsPlugin(),
               listsPlugin(),
@@ -87,14 +87,26 @@ export const EditingEditorComment = ({
         </div>
       </div>
       <div className={'flex justify-end items-center gap-2'}>
-        <Button onClick={() => {
-          onChange(value)
-        }} variant={'destructive'} className={'h-8'}>Cancel</Button>
-        <Button disabled={!tempValue} onClick={() => {
-          onChange(tempValue)
-          setTempValue('')
-        }} className={'h-8'}>Update Comment</Button>
+        <Button
+          onClick={() => {
+            onChange(value);
+          }}
+          variant={'destructive'}
+          className={'h-8'}
+        >
+          Cancel
+        </Button>
+        <Button
+          disabled={!tempValue}
+          onClick={() => {
+            onChange(tempValue);
+            setTempValue('');
+          }}
+          className={'h-8'}
+        >
+          Update Comment
+        </Button>
       </div>
     </div>
-  )
-}
+  );
+};
