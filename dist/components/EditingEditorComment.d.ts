@@ -5,7 +5,7 @@ interface EditorCommentProps {
     placeholder?: string;
     onUpload?: (image: File) => Promise<string>;
     theme: 'light' | 'dark' | 'system';
-    currentUser: User;
+    currentUser?: User;
 }
 export declare const EditingEditorComment: ({ value, onChange, placeholder, onUpload, theme, currentUser, }: EditorCommentProps) => import("react/jsx-dev-runtime").JSX.Element;
 export {};

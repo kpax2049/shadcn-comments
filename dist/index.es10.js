@@ -12,7 +12,7 @@ const v = ({
     p,
     {
       className: "rounded-full",
-      placeholder: `Reply as ${a.firstName} ${a.lastName}`,
+      placeholder: `Reply as ${a?.firstName} ${a?.lastName}`,
       value: l,
       onChange: (t) => m(t.target.value),
       onKeyDown: (t) => {

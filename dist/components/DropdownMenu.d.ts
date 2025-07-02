@@ -4,6 +4,6 @@ export declare function DropdownMenu({ comment, openEditor, currentUser, deleteC
     comment: Comment;
     openEditor: () => void;
     deleteComment: () => void;
-    currentUser: User;
+    currentUser?: User;
 }): import("react/jsx-dev-runtime").JSX.Element;
 //# sourceMappingURL=DropdownMenu.d.ts.map

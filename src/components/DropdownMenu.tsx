@@ -12,7 +12,7 @@ export function DropdownMenu({
   comment: Comment;
   openEditor: () => void;
   deleteComment: () => void;
-  currentUser: User;
+  currentUser?: User;
 }) {
   const ref = useRef<any>();
   const [open, setOpen] = useState(false);
@@ -71,7 +71,7 @@ export function DropdownMenu({
         >
           <div>Copy link</div>
         </div>
-        {currentUser.id === comment.user?.id && (
+        {currentUser?.id === comment.user?.id && (
           <div
             onClick={() => {
               openEditor();
@@ -82,7 +82,7 @@ export function DropdownMenu({
             <div>Edit</div>
           </div>
         )}
-        {currentUser.id === comment.user?.id && (
+        {currentUser?.id === comment.user?.id && (
           <div
             className={'px-3 py-2 text-sm text-red-600 hover:bg-blue-500'}
             onClick={del}

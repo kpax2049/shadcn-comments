@@ -65,7 +65,7 @@ export interface Comment {
 }
 export interface CreateCommentRequest {
   text: string;
-  userId: number;
+  userId?: number;
   galleryId: number;
   parentId?: number;
 }

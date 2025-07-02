@@ -5,7 +5,7 @@ interface CommentProps {
     isMdxEditor?: boolean;
     formatDate?: string;
     value: Comment[];
-    currentUser: User;
+    currentUser?: User;
     galleryId: number;
     onChange?: (value: Comment[]) => void;
     onReply?: (value: CreateCommentRequest) => void;
@@ -16,7 +16,7 @@ interface CommentProps {
 interface CommentCardProps {
     comment: Comment;
     onReply: (val: string) => void;
-    currentUser: User;
+    currentUser?: User;
     allowUpVote?: boolean;
     onChange: (change: any) => void;
     onDelete: () => void;

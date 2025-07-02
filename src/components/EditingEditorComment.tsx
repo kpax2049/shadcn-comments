@@ -29,7 +29,7 @@ interface EditorCommentProps {
   placeholder?: string;
   onUpload?: (image: File) => Promise<string>;
   theme: 'light' | 'dark' | 'system';
-  currentUser: User;
+  currentUser?: User;
 }
 
 export const EditingEditorComment = ({

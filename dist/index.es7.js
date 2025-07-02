@@ -205,7 +205,7 @@ const M = ({
         onReply: (n) => {
           i && u({
             parentId: a.id,
-            userId: d.id,
+            userId: d?.id,
             text: n,
             galleryId: N
           });

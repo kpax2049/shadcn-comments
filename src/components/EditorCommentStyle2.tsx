@@ -7,7 +7,7 @@ import { User } from '../types/user';
 interface EditorCommentStyle2Props {
   value?: string;
   onChange?: (val: string) => void;
-  currentUser: User;
+  currentUser?: User;
 }
 
 export const EditorCommentStyle2 = ({
@@ -26,7 +26,7 @@ export const EditorCommentStyle2 = ({
       <div className={'w-full flex-1'}>
         <Input
           className={'rounded-full'}
-          placeholder={`Reply as ${currentUser.firstName} ${currentUser.lastName}`}
+          placeholder={`Reply as ${currentUser?.firstName} ${currentUser?.lastName}`}
           value={tempValue}
           onChange={(v) => setTempValue(v.target.value)}
           onKeyDown={(e) => {
