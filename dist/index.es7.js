@@ -1,41 +1,41 @@
 import e, { useState as A } from "react";
-import { Avatar as b, AvatarImage as y, AvatarFallback as C } from "./index.es3.js";
-import { ArrowUpIcon as h, SmileIcon as S, CircleIcon as T } from "lucide-react";
-import { EditorComment as O } from "./index.es6.js";
-import { ACTIONS as I, ACTIONS_TYPE as c } from "./index.es8.js";
-import { EditorCommentStyle2 as k } from "./index.es10.js";
-import { MDXProvider as D } from "@mdx-js/react";
+import { Avatar as y, AvatarImage as b, AvatarFallback as w } from "./index.es3.js";
+import { ArrowUpIcon as S, SmileIcon as T, CircleIcon as O } from "lucide-react";
+import { EditorComment as I } from "./index.es6.js";
+import { ACTIONS as k, ACTIONS_TYPE as o } from "./index.es8.js";
+import { EditorCommentStyle2 as D } from "./index.es10.js";
+import { MDXProvider as h } from "@mdx-js/react";
 import U from "./index.es11.js";
-import { formatDistance as w } from "date-fns";
+import { formatDistance as C } from "date-fns";
 import { Popover as R, PopoverTrigger as V, PopoverContent as $ } from "./index.es12.js";
 import j from "./index.es13.js";
 import { DropdownMenu as z } from "./index.es14.js";
 import { EditingEditorComment as _ } from "./index.es15.js";
-const M = ({
+const B = ({
   comment: t,
   onReply: g = () => {
   },
-  currentUser: m,
-  allowUpVote: i,
+  currentUser: i,
+  allowUpVote: n,
   onChange: r,
   onVoteChange: u,
   theme: f,
   onDelete: d
 }) => {
-  const [N, v] = A(!1), [E, a] = A(!1), n = I.filter(
+  const [v, N] = A(!1), [E, a] = A(!1), c = k.filter(
     (l) => t.actions && t.actions[l.id] && t.selectedActions?.includes(l.id)
-  ), p = (t.actions ?? {})[c.UPVOTE], x = t.selectedActions?.includes(c.UPVOTE);
-  return /* @__PURE__ */ e.createElement("div", { className: "flex flex-col gap-1", id: `comment-${t.id}` }, /* @__PURE__ */ e.createElement("div", { className: "flex gap-4" }, /* @__PURE__ */ e.createElement(b, { className: "w-[32px] h-[32px]" }, /* @__PURE__ */ e.createElement(y, { src: "https://github.com/shadcn.png" }), /* @__PURE__ */ e.createElement(C, null, "CN")), /* @__PURE__ */ e.createElement("div", { className: "flex flex-col w-full" }, /* @__PURE__ */ e.createElement("div", { className: "min-h-[30px] rounded-lg s-comment-card border" }, /* @__PURE__ */ e.createElement(
+  ), p = (t.actions ?? {})[o.UPVOTE], x = t.selectedActions?.includes(o.UPVOTE);
+  return /* @__PURE__ */ e.createElement("div", { className: "flex flex-col gap-1", id: `comment-${t.id}` }, /* @__PURE__ */ e.createElement("div", { className: "flex gap-4" }, /* @__PURE__ */ e.createElement(y, { className: "w-[32px] h-[32px]" }, /* @__PURE__ */ e.createElement(b, { src: i?.profile?.avatarUrl }), /* @__PURE__ */ e.createElement(w, null, "GB")), /* @__PURE__ */ e.createElement("div", { className: "flex flex-col w-full" }, /* @__PURE__ */ e.createElement("div", { className: "min-h-[30px] rounded-lg s-comment-card border" }, /* @__PURE__ */ e.createElement(
     "div",
     {
       className: "h-[37px] w-full user rounded-t-lg flex items-center justify-between border-b"
     },
-    /* @__PURE__ */ e.createElement("div", { className: "flex items-center px-3" }, /* @__PURE__ */ e.createElement("span", { className: "font-semibold" }, t.user?.firstName + " " + t.user?.lastName)),
+    /* @__PURE__ */ e.createElement("div", { className: "flex items-center px-3" }, /* @__PURE__ */ e.createElement("span", { className: "font-semibold" }, t.user?.fullName || t.user?.username)),
     /* @__PURE__ */ e.createElement(
       z,
       {
         comment: t,
-        currentUser: m,
+        currentUser: i,
         openEditor: () => {
           a(!0);
         },
@@ -45,7 +45,7 @@ const M = ({
   ), /* @__PURE__ */ e.createElement("div", { className: "p-3" }, E ? /* @__PURE__ */ e.createElement(
     _,
     {
-      currentUser: m,
+      currentUser: i,
       theme: f,
       value: t.text,
       onChange: (l) => {
@@ -54,7 +54,7 @@ const M = ({
         }), a(!1);
       }
     }
-  ) : /* @__PURE__ */ e.createElement(U, { source: t.text })), i && !E && /* @__PURE__ */ e.createElement(
+  ) : /* @__PURE__ */ e.createElement(U, { source: t.text })), n && !E && /* @__PURE__ */ e.createElement(
     "div",
     {
       className: "flex flex-wrap items-center gap-2 md:gap-3 text-sm px-3 pb-2"
@@ -64,29 +64,29 @@ const M = ({
       {
         onClick: () => {
           u(!x);
-          const l = (t.actions || {})[c.UPVOTE];
+          const l = (t.actions || {})[o.UPVOTE];
           x ? l && r({
             selectedActions: t.selectedActions?.filter(
-              (s) => s !== c.UPVOTE
+              (s) => s !== o.UPVOTE
             ),
             actions: {
               ...t.actions || {},
-              [c.UPVOTE]: l - 1
+              [o.UPVOTE]: l - 1
             }
           }) : r({
             selectedActions: [
               ...t.selectedActions ?? [],
-              c.UPVOTE
+              o.UPVOTE
             ],
             actions: {
               ...t.actions || {},
-              [c.UPVOTE]: l ? l + 1 : 1
+              [o.UPVOTE]: l ? l + 1 : 1
             }
           });
         },
         className: `border ${x ? "border-[#4493f8] text-[#4493f8]" : ""} rounded-xl px-2 py-0.5 inline-flex gap-1 items-center cursor-pointer`
       },
-      /* @__PURE__ */ e.createElement(h, { size: 16 }),
+      /* @__PURE__ */ e.createElement(S, { size: 16 }),
       /* @__PURE__ */ e.createElement("span", null, p ?? 0)
     ),
     /* @__PURE__ */ e.createElement("div", null, /* @__PURE__ */ e.createElement(R, null, /* @__PURE__ */ e.createElement(V, { asChild: !0 }, /* @__PURE__ */ e.createElement(
@@ -94,37 +94,37 @@ const M = ({
       {
         className: "p-0.5 rounded-full border cursor-pointer"
       },
-      /* @__PURE__ */ e.createElement(S, { size: 16 })
+      /* @__PURE__ */ e.createElement(T, { size: 16 })
     )), /* @__PURE__ */ e.createElement($, { className: "p-0.5", align: "start" }, /* @__PURE__ */ e.createElement(
       j,
       {
         value: t.selectedActions,
         onSelect: (l, s) => {
-          const o = (t.actions || {})[s];
+          const m = (t.actions || {})[s];
           r({
             selectedActions: l,
             actions: {
               ...t.actions || {},
-              [s]: o ? o + 1 : 1
+              [s]: m ? m + 1 : 1
             }
           });
         },
         onUnSelect: (l, s) => {
-          const o = (t.actions || {})[s];
-          o && o > 0 && r({
+          const m = (t.actions || {})[s];
+          m && m > 0 && r({
             selectedActions: l.filter(
               (P) => P !== s
             ),
             actions: {
               ...t.actions || {},
-              [s]: o - 1
+              [s]: m - 1
             }
           });
         },
         className: ""
       }
     )))),
-    n?.map((l) => /* @__PURE__ */ e.createElement(
+    c?.map((l) => /* @__PURE__ */ e.createElement(
       "div",
       {
         key: l.id,
@@ -142,41 +142,41 @@ const M = ({
       "span",
       {
         className: "cursor-pointer text-primary",
-        onClick: () => v(!0)
+        onClick: () => N(!0)
       },
       "Reply"
     ),
-    /* @__PURE__ */ e.createElement(T, { size: 3 }),
-    /* @__PURE__ */ e.createElement("span", { className: "text-opacity-80" }, t.createdAt && w(Date.now(), t.createdAt, {
+    /* @__PURE__ */ e.createElement(O, { size: 3 }),
+    /* @__PURE__ */ e.createElement("span", { className: "text-opacity-80" }, t.createdAt && C(Date.now(), t.createdAt, {
       addSuffix: !0
     }))
-  ))), N ? /* @__PURE__ */ e.createElement("div", { className: "ml-[48px]" }, /* @__PURE__ */ e.createElement(k, { onChange: g, currentUser: m })) : null, t.replies && t.replies.length > 0 ? /* @__PURE__ */ e.createElement("div", { className: "ml-[48px] flex flex-col gap-2" }, t.replies.map((l) => /* @__PURE__ */ e.createElement("div", { className: "w-full flex gap-2", key: l.id }, /* @__PURE__ */ e.createElement(b, { className: "w-[28px] h-[28px] text-sm" }, /* @__PURE__ */ e.createElement(y, { src: "https://github.com/shadcn.png" }), /* @__PURE__ */ e.createElement(C, null, "CN")), /* @__PURE__ */ e.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ e.createElement("div", { className: "flex" }, l.text), /* @__PURE__ */ e.createElement(
+  ))), v ? /* @__PURE__ */ e.createElement("div", { className: "ml-[48px]" }, /* @__PURE__ */ e.createElement(D, { onChange: g, currentUser: i })) : null, t.replies && t.replies.length > 0 ? /* @__PURE__ */ e.createElement("div", { className: "ml-[48px] flex flex-col gap-2" }, t.replies.map((l) => /* @__PURE__ */ e.createElement("div", { className: "w-full flex gap-2", key: l.id }, /* @__PURE__ */ e.createElement(y, { className: "w-[28px] h-[28px] text-sm" }, /* @__PURE__ */ e.createElement(b, { src: i?.profile?.avatarUrl }), /* @__PURE__ */ e.createElement(w, null, "GB")), /* @__PURE__ */ e.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ e.createElement("div", { className: "flex" }, l.text), /* @__PURE__ */ e.createElement(
     "div",
     {
       className: "inline-flex gap-1 text-sm font-semibold light:text-gray-600"
     },
-    /* @__PURE__ */ e.createElement("div", { className: "text-primary" }, l.user?.firstName + " " + l.user?.lastName),
-    /* @__PURE__ */ e.createElement("div", { className: "text-opacity-80" }, l.createdAt && w(Date.now(), l.createdAt, {
+    /* @__PURE__ */ e.createElement("div", { className: "text-primary" }, l.user?.fullName || l.user?.username),
+    /* @__PURE__ */ e.createElement("div", { className: "text-opacity-80" }, l.createdAt && C(Date.now(), l.createdAt, {
       addSuffix: !0
     }))
   ))))) : null);
 }, ee = ({
   className: t = "",
   formatDate: g,
-  isMdxEditor: m = !0,
-  value: i,
+  isMdxEditor: i = !0,
+  value: n,
   onChange: r = () => {
   },
   onReply: u = () => {
   },
   theme: f = "light",
   currentUser: d,
-  galleryId: N,
-  allowUpVote: v = !1,
+  galleryId: v,
+  allowUpVote: N = !1,
   onVoteChange: E = (a) => {
   }
 }) => /* @__PURE__ */ e.createElement(
-  D,
+  h,
   {
     components: {
       wrapper(a) {
@@ -189,8 +189,8 @@ const M = ({
     {
       className: `max-w-screen-md flex flex-col gap-2 w-full ${t}`
     },
-    m && /* @__PURE__ */ e.createElement(
-      O,
+    i && /* @__PURE__ */ e.createElement(
+      I,
       {
         currentUser: d,
         theme: f,
@@ -198,34 +198,34 @@ const M = ({
         }
       }
     ),
-    i.map((a) => /* @__PURE__ */ e.createElement(
-      M,
+    n.map((a) => /* @__PURE__ */ e.createElement(
+      B,
       {
         currentUser: d,
-        onReply: (n) => {
-          i && u({
+        onReply: (c) => {
+          n && u({
             parentId: a.id,
             userId: d?.id,
-            text: n,
-            galleryId: N
+            text: c,
+            galleryId: v
           });
         },
-        onChange: (n) => {
-          i && r(
-            i.map(
+        onChange: (c) => {
+          n && r(
+            n.map(
               (p) => p.id === a.id ? {
                 ...p,
-                ...n
+                ...c
               } : p
             )
           );
         },
         onDelete: () => {
-          r(i.filter((n) => n.id !== a.id));
+          r(n.filter((c) => c.id !== a.id));
         },
         comment: a,
         key: a.id,
-        allowUpVote: v,
+        allowUpVote: N,
         theme: f,
         onVoteChange: E
       }
@@ -233,7 +233,7 @@ const M = ({
   )
 );
 export {
-  M as CommentCard,
+  B as CommentCard,
   ee as CommentSection
 };
 //# sourceMappingURL=index.es7.js.map

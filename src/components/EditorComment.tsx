@@ -51,8 +51,8 @@ export const EditorComment = ({
     <div className={`flex flex-col gap-2 w-full editor-content-container`}>
       <div className={`flex gap-4 w-full`}>
         <Avatar className={'w-[32px] h-[32px]'}>
-          <AvatarImage src={'https://github.com/shadcn.png'} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={currentUser?.profile?.avatarUrl} />
+          <AvatarFallback>GB</AvatarFallback>
         </Avatar>
 
         <div className={'w-full flex-1'}>

@@ -1,7 +1,7 @@
-import e, { useState as c, useEffect as i } from "react";
-import { MDXEditor as s, toolbarPlugin as u, UndoRedo as d, ListsToggle as g, Separator as p, InsertImage as E, BoldItalicUnderlineToggles as f, BlockTypeSelect as h, CreateLink as x, InsertTable as k, headingsPlugin as N, listsPlugin as P, quotePlugin as b, thematicBreakPlugin as v, markdownShortcutPlugin as w, tablePlugin as C, imagePlugin as y, linkPlugin as I, linkDialogPlugin as T } from "@mdxeditor/editor";
-import { Avatar as A, AvatarImage as B, AvatarFallback as S } from "./index.es3.js";
-import { Button as U } from "./index.es2.js";
+import e, { useState as i, useEffect as s } from "react";
+import { MDXEditor as u, toolbarPlugin as d, UndoRedo as g, ListsToggle as E, Separator as p, InsertImage as f, BoldItalicUnderlineToggles as h, BlockTypeSelect as x, CreateLink as k, InsertTable as v, headingsPlugin as N, listsPlugin as P, quotePlugin as w, thematicBreakPlugin as b, markdownShortcutPlugin as C, tablePlugin as y, imagePlugin as B, linkPlugin as I, linkDialogPlugin as T } from "@mdxeditor/editor";
+import { Avatar as A, AvatarImage as S, AvatarFallback as U } from "./index.es3.js";
+import { Button as D } from "./index.es2.js";
 const j = ({
   value: a = "",
   onChange: n = () => {
@@ -9,30 +9,30 @@ const j = ({
   placeholder: r = "Add your comment here...",
   onUpload: m,
   theme: o,
-  currentUser: D
+  currentUser: c
 }) => {
-  const [t, l] = c("");
-  return i(() => {
-    l(a);
-  }, [a]), /* @__PURE__ */ e.createElement("div", { className: "flex flex-col gap-2 w-full editor-content-container" }, /* @__PURE__ */ e.createElement("div", { className: "flex gap-4 w-full" }, /* @__PURE__ */ e.createElement(A, { className: "w-[32px] h-[32px]" }, /* @__PURE__ */ e.createElement(B, { src: "https://github.com/shadcn.png" }), /* @__PURE__ */ e.createElement(S, null, "CN")), /* @__PURE__ */ e.createElement("div", { className: "w-full flex-1" }, /* @__PURE__ */ e.createElement(
-    s,
+  const [l, t] = i("");
+  return s(() => {
+    t(a);
+  }, [a]), /* @__PURE__ */ e.createElement("div", { className: "flex flex-col gap-2 w-full editor-content-container" }, /* @__PURE__ */ e.createElement("div", { className: "flex gap-4 w-full" }, /* @__PURE__ */ e.createElement(A, { className: "w-[32px] h-[32px]" }, /* @__PURE__ */ e.createElement(S, { src: c?.profile?.avatarUrl }), /* @__PURE__ */ e.createElement(U, null, "GB")), /* @__PURE__ */ e.createElement("div", { className: "w-full flex-1" }, /* @__PURE__ */ e.createElement(
+    u,
     {
-      markdown: t,
-      onChange: l,
+      markdown: l,
+      onChange: t,
       placeholder: r,
       className: `border rounded-lg prose-sm md:prose max-w-full editor-content ${o === "dark" ? "dark-theme" : "light-theme"}`,
       contentEditableClassName: "overflow-y-auto py-2 whitespace-normal text-start",
       plugins: [
-        u({
-          toolbarContents: () => /* @__PURE__ */ e.createElement("div", { className: "flex gap-1" }, " ", /* @__PURE__ */ e.createElement(d, null), /* @__PURE__ */ e.createElement(g, null), /* @__PURE__ */ e.createElement(p, null), /* @__PURE__ */ e.createElement(E, null), /* @__PURE__ */ e.createElement("div", { className: "hidden md:flex gap-1" }, /* @__PURE__ */ e.createElement(f, null), /* @__PURE__ */ e.createElement(h, null), /* @__PURE__ */ e.createElement(x, null), /* @__PURE__ */ e.createElement(k, null)))
+        d({
+          toolbarContents: () => /* @__PURE__ */ e.createElement("div", { className: "flex gap-1" }, " ", /* @__PURE__ */ e.createElement(g, null), /* @__PURE__ */ e.createElement(E, null), /* @__PURE__ */ e.createElement(p, null), /* @__PURE__ */ e.createElement(f, null), /* @__PURE__ */ e.createElement("div", { className: "hidden md:flex gap-1" }, /* @__PURE__ */ e.createElement(h, null), /* @__PURE__ */ e.createElement(x, null), /* @__PURE__ */ e.createElement(k, null), /* @__PURE__ */ e.createElement(v, null)))
         }),
         N(),
         P(),
-        b(),
-        v(),
         w(),
+        b(),
         C(),
-        y({
+        y(),
+        B({
           imageUploadHandler: m
         }),
         I(),
@@ -40,11 +40,11 @@ const j = ({
       ]
     }
   ))), /* @__PURE__ */ e.createElement("div", { className: "flex justify-end" }, /* @__PURE__ */ e.createElement(
-    U,
+    D,
     {
-      disabled: !t,
+      disabled: !l,
       onClick: () => {
-        n(t), l("");
+        n(l), t("");
       },
       className: "h-8"
     },

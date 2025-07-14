@@ -71,8 +71,8 @@ export const CommentCard = ({
     <div className={'flex flex-col gap-1'} id={`comment-${comment.id}`}>
       <div className={'flex gap-4'}>
         <Avatar className={'w-[32px] h-[32px]'}>
-          <AvatarImage src={'https://github.com/shadcn.png'} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={currentUser?.profile?.avatarUrl} />
+          <AvatarFallback>GB</AvatarFallback>
         </Avatar>
         <div className={`flex flex-col w-full`}>
           <div className={'min-h-[30px] rounded-lg s-comment-card border'}>
@@ -83,7 +83,7 @@ export const CommentCard = ({
             >
               <div className={'flex items-center px-3'}>
                 <span className={'font-semibold'}>
-                  {comment.user?.firstName + ' ' + comment.user?.lastName}
+                  {comment.user?.fullName || comment.user?.username}
                 </span>
               </div>
               <DropdownMenu
@@ -248,8 +248,8 @@ export const CommentCard = ({
           {comment.replies.map((rep) => (
             <div className={'w-full flex gap-2'} key={rep.id}>
               <Avatar className={'w-[28px] h-[28px] text-sm'}>
-                <AvatarImage src={'https://github.com/shadcn.png'} />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={currentUser?.profile?.avatarUrl} />
+                <AvatarFallback>GB</AvatarFallback>
               </Avatar>
 
               <div className={'flex flex-col'}>
@@ -260,7 +260,7 @@ export const CommentCard = ({
                   }
                 >
                   <div className={'text-primary'}>
-                    {rep.user?.firstName + ' ' + rep.user?.lastName}
+                    {rep.user?.fullName || rep.user?.username}
                   </div>
                   <div className={'text-opacity-80'}>
                     {rep.createdAt &&

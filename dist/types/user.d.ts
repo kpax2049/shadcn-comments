@@ -3,7 +3,18 @@ export type User = {
     createdAt?: Date;
     updatedAt?: Date;
     email: string;
-    firstName?: string;
-    lastName?: string;
+    fullName?: string;
+    username: string;
+    profile: Profile;
 };
+export interface Profile {
+    id: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    avatarUrl?: string;
+    userId: number;
+    configuration?: {
+        [key: string]: unknown;
+    }[];
+}
 //# sourceMappingURL=user.d.ts.map
