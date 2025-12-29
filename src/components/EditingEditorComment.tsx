@@ -50,7 +50,7 @@ export const EditingEditorComment = ({
             markdown={tempValue}
             onChange={setTempValue}
             placeholder={placeholder}
-            className={`border rounded-lg prose-sm md:prose max-w-full editor-content ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}
+            className={`border rounded-md prose-sm md:prose max-w-full editor-content ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}
             contentEditableClassName={`overflow-y-auto py-2 whitespace-normal text-start`}
             plugins={[
               toolbarPlugin({

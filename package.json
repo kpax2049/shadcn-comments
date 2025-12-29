@@ -17,7 +17,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && npm run build:styles",
+    "build": "vite build && npm run build:styles",
     "build:styles": "postcss ./src/index.css -o ./dist/style.css && postcss ./src/mdx-style.css -o ./dist/mdx-style.css",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },

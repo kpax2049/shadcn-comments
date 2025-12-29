@@ -25,7 +25,7 @@ export const EditorCommentStyle2 = ({
 
       <div className={'w-full flex-1'}>
         <Input
-          className={'rounded-full'}
+          className={'rounded-md'}
           placeholder={`Reply as ${currentUser?.fullName || currentUser?.username}`}
           value={tempValue}
           onChange={(v) => setTempValue(v.target.value)}

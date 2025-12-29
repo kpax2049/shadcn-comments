@@ -1,3 +1,4 @@
+// CommentSection.tsx
 import React, { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './Avatar';
 import { ArrowUpIcon, CircleIcon, SmileIcon } from 'lucide-react';
@@ -29,7 +30,11 @@ interface CommentProps {
   onReply?: (value: CreateCommentRequest) => void;
   theme: 'light' | 'dark' | 'system';
   allowUpVote?: boolean;
-  onVoteChange?: (checked: boolean) => void;
+  onReact?: (
+    commentId: number,
+    type: ACTIONS_TYPE,
+    nextSelected: boolean
+  ) => void;
 }
 
 interface CommentCardProps {
@@ -39,7 +44,7 @@ interface CommentCardProps {
   allowUpVote?: boolean;
   onChange: (change: any) => void;
   onDelete: () => void;
-  onVoteChange: (change: boolean) => void;
+  onReact: (type: ACTIONS_TYPE, nextSelected: boolean) => void;
   theme: 'light' | 'dark' | 'system';
 }
 
@@ -49,62 +54,76 @@ export const CommentCard = ({
   currentUser,
   allowUpVote,
   onChange,
-  onVoteChange,
+  onReact,
   theme,
   onDelete,
 }: CommentCardProps) => {
   const [replying, setReplying] = useState(false);
   const [editing, setEditing] = useState(false);
 
-  const actions = ACTIONS.filter(
-    (e) =>
-      comment.actions &&
-      comment.actions[e.id] &&
-      comment.selectedActions?.includes(e.id)
-  );
+  // TS-friendly read of actions (string-enum keys)
+  const actionsMap =
+    (comment.actions as Record<string, number> | undefined) ?? undefined;
+
+  const actions = ACTIONS.filter((e) => {
+    const count = actionsMap?.[e.id] ?? 0;
+    return count > 0;
+  });
 
   const upvote = (comment.actions ?? {})[ACTIONS_TYPE.UPVOTE];
-
   const upvoted = comment.selectedActions?.includes(ACTIONS_TYPE.UPVOTE);
 
   return (
-    <div className={'flex flex-col gap-1'} id={`comment-${comment.id}`}>
-      <div className={'flex gap-4'}>
-        <Avatar className={'w-[32px] h-[32px]'}>
+    <div className="flex flex-col gap-1" id={`comment-${comment.id}`}>
+      <div className="flex gap-4">
+        <Avatar className="w-[32px] h-[32px] ring-1 ring-border/60 overflow-hidden">
           <AvatarImage src={currentUser?.profile?.avatarUrl} />
-          <AvatarFallback>GB</AvatarFallback>
+          {/* Gradient background for initials */}
+          <AvatarFallback className="bg-[linear-gradient(to_bottom,#4967ff,#2ecaff)] text-white font-medium">
+            GB
+          </AvatarFallback>
         </Avatar>
-        <div className={`flex flex-col w-full`}>
-          <div className={'min-h-[30px] rounded-lg s-comment-card border'}>
-            <div
-              className={
-                'h-[37px] w-full user rounded-t-lg flex items-center justify-between border-b'
-              }
-            >
-              <div className={'flex items-center px-3'}>
-                <span className={'font-semibold'}>
+
+        <div className="flex flex-col w-full">
+          {/* Card (neutral background) */}
+          <div className="relative min-h-[30px] rounded-md border border-border/70 bg-card/70 shadow-sm hover:shadow-md transition-shadow">
+            {/* Header */}
+            <div className="relative h-10 w-full rounded-t-md flex items-center justify-between px-3 bg-background/40">
+              <div className="flex items-center gap-2">
+                {/* Author (NO underline now) */}
+                <span className="inline-block font-semibold tracking-tight">
                   {comment.user?.fullName || comment.user?.username}
                 </span>
+
+                {comment.createdAt && (
+                  <span className="text-xs text-muted-foreground/80">
+                    {formatDistance(Date.now(), comment.createdAt, {
+                      addSuffix: true,
+                    })}
+                  </span>
+                )}
               </div>
+
               <DropdownMenu
                 comment={comment}
                 currentUser={currentUser}
-                openEditor={() => {
-                  setEditing(true);
-                }}
+                openEditor={() => setEditing(true)}
                 deleteComment={onDelete}
               />
+
+              {/* Gradient separator replacing border-b (subtle) */}
+              <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-[#4967ff]/30 to-[#2ecaff]/30" />
             </div>
-            <div className={'p-3'}>
+
+            {/* Body */}
+            <div className="px-4 py-3">
               {editing ? (
                 <EditingEditorComment
                   currentUser={currentUser}
                   theme={theme}
                   value={comment.text}
                   onChange={(val) => {
-                    onChange({
-                      text: val,
-                    });
+                    onChange({ text: val });
                     setEditing(false);
                   }}
                 />
@@ -112,18 +131,20 @@ export const CommentCard = ({
                 <PreviewComment source={comment.text} />
               )}
             </div>
+
+            {/* Footer actions */}
             {allowUpVote && !editing && (
-              <div
-                className={
-                  'flex flex-wrap items-center gap-2 md:gap-3 text-sm px-3 pb-2'
-                }
-              >
+              <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm px-3 pb-3">
+                {/* Upvote */}
                 <div
                   onClick={() => {
-                    onVoteChange(!upvoted);
                     const currentAmount = (comment.actions || {})[
                       ACTIONS_TYPE.UPVOTE
                     ];
+                    onReact(
+                      ACTIONS_TYPE.UPVOTE,
+                      upvoted ? false : true
+                    );
                     if (upvoted) {
                       if (currentAmount)
                         onChange({
@@ -150,65 +171,74 @@ export const CommentCard = ({
                       });
                     }
                   }}
-                  className={`border ${
-                    upvoted ? `border-[#4493f8] text-[#4493f8]` : ''
-                  } rounded-xl px-2 py-0.5 inline-flex gap-1 items-center cursor-pointer`}
+                  className={[
+                    'inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-sm cursor-pointer',
+                    'active:scale-[0.98] transition-all',
+                    upvoted
+                      ? // Gradient only when active
+                        'text-white border-transparent ring-0 shadow ' +
+                        'bg-[linear-gradient(to_bottom,rgba(73,103,255,.85),rgba(46,202,255,.85))]'
+                      : 'border-border/70 hover:bg-accent',
+                  ].join(' ')}
                 >
                   <ArrowUpIcon size={16} />
                   <span>{upvote ?? 0}</span>
                 </div>
-                <div>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <div
-                        className={'p-0.5 rounded-full border cursor-pointer'}
-                      >
-                        <SmileIcon size={16} />
-                      </div>
-                    </PopoverTrigger>
-                    <PopoverContent className={'p-0.5'} align={'start'}>
-                      <EmojiSelect
-                        value={comment.selectedActions}
-                        onSelect={(v, changeValue: ACTIONS_TYPE) => {
-                          const currentAmount = (comment.actions || {})[
-                            changeValue
-                          ];
-                          onChange({
-                            selectedActions: v,
-                            actions: {
-                              ...(comment.actions || {}),
-                              [changeValue]: currentAmount
-                                ? currentAmount + 1
-                                : 1,
-                            },
-                          });
-                        }}
-                        onUnSelect={(v, changeValue: ACTIONS_TYPE) => {
-                          const currentAmount = (comment.actions || {})[
-                            changeValue
-                          ];
-                          if (currentAmount && currentAmount > 0)
-                            onChange({
-                              selectedActions: v.filter(
-                                (f) => f !== changeValue
-                              ),
-                              actions: {
-                                ...(comment.actions || {}),
-                                [changeValue]: currentAmount - 1,
-                              },
-                            });
-                        }}
-                        className={''}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
+
+                {/* Emoji */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div
+                      className={[
+                        'inline-flex h-8 w-8 items-center justify-center',
+                        'rounded-md border border-border/70 hover:bg-accent cursor-pointer',
+                        'active:scale-[0.98] transition-all',
+                      ].join(' ')}
+                    >
+                      <SmileIcon size={16} />
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0.5" align="start">
+                    <EmojiSelect
+                      value={comment.selectedActions}
+                      onSelect={(v, changeValue: ACTIONS_TYPE) => {
+                        const selected = v as ACTIONS_TYPE[]; // picker -> enum array
+                        const currentAmount =
+                          (comment.actions || {})[changeValue] ?? 0;
+                        onReact(changeValue, true);
+                        onChange({
+                          selectedActions: selected,
+                          actions: {
+                            ...(comment.actions || {}),
+                            [changeValue]: currentAmount + 1,
+                          },
+                        });
+                      }}
+                      onUnSelect={(v, changeValue: ACTIONS_TYPE) => {
+                        const selected = (v as string[]).filter(
+                          (f) => f !== changeValue
+                        ) as ACTIONS_TYPE[];
+                        const currentAmount =
+                          (comment.actions || {})[changeValue] ?? 0;
+                        onReact(changeValue, false);
+                        onChange({
+                          selectedActions: selected,
+                          actions: {
+                            ...(comment.actions || {}),
+                            [changeValue]: Math.max(0, currentAmount - 1),
+                          },
+                        });
+                      }}
+                      className=""
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                {/* Active reactions (no gradient underline now) */}
                 {actions?.map((e) => (
                   <div
                     key={e.id}
-                    className={`border ${
-                      upvoted ? `border-[#4493f8] text-[#4493f8]` : ''
-                    } rounded-xl px-2 py-0.5 inline-flex gap-1 items-center cursor-pointer`}
+                    className="inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-sm border-border/60"
                   >
                     <span>{e.emoji}</span>
                     <span>{(comment.actions ?? {})[e.id]}</span>
@@ -217,19 +247,17 @@ export const CommentCard = ({
               </div>
             )}
           </div>
-          <div
-            className={
-              'flex gap-2 items-center text-sm font-semibold light:text-gray-600 ml-1'
-            }
-          >
+
+          {/* Reply/meta row */}
+          <div className="ml-1 mt-1 flex items-center gap-2 text-sm text-muted-foreground">
             <span
-              className={'cursor-pointer text-primary'}
+              className="cursor-pointer font-semibold text-[#4967ff] hover:underline"
               onClick={() => setReplying(true)}
             >
               Reply
             </span>
             <CircleIcon size={3} />
-            <span className={'text-opacity-80'}>
+            <span className="opacity-80">
               {comment.createdAt &&
                 formatDistance(Date.now(), comment.createdAt, {
                   addSuffix: true,
@@ -238,31 +266,38 @@ export const CommentCard = ({
           </div>
         </div>
       </div>
+
+      {/* Inline reply editor */}
       {replying ? (
-        <div className={'ml-[48px]'}>
+        <div className="ml-[48px]">
           <EditorCommentStyle2 onChange={onReply} currentUser={currentUser} />
         </div>
       ) : null}
+
+      {/* Replies */}
       {comment.replies && comment.replies.length > 0 ? (
-        <div className={'ml-[48px] flex flex-col gap-2'}>
+        <div className="ml-[48px] flex flex-col gap-3 border-l-2 border-dashed border-border/60 pl-3 md:pl-4">
           {comment.replies.map((rep) => (
-            <div className={'w-full flex gap-2'} key={rep.id}>
-              <Avatar className={'w-[28px] h-[28px] text-sm'}>
+            <div className="w-full flex gap-2 relative" key={rep.id}>
+              {/* subtle neutral dot */}
+              <span className="absolute -left-[9px] top-3 hidden h-2 w-2 rounded-full bg-border md:block" />
+              <Avatar className="w-[28px] h-[28px] text-sm ring-1 ring-border/60 overflow-hidden">
                 <AvatarImage src={currentUser?.profile?.avatarUrl} />
-                <AvatarFallback>GB</AvatarFallback>
+                {/* Gradient initials in replies too */}
+                <AvatarFallback className="bg-[linear-gradient(to_bottom,#4967ff,#2ecaff)] text-white font-medium">
+                  GB
+                </AvatarFallback>
               </Avatar>
 
-              <div className={'flex flex-col'}>
-                <div className={'flex'}>{rep.text}</div>
-                <div
-                  className={
-                    'inline-flex gap-1 text-sm font-semibold light:text-gray-600'
-                  }
-                >
-                  <div className={'text-primary'}>
+              <div className="flex flex-col">
+                <div className="prose prose-sm dark:prose-invert max-w-none">
+                  {rep.text}
+                </div>
+                <div className="inline-flex gap-2 text-xs text-muted-foreground">
+                  <div className="font-medium text-foreground/90">
                     {rep.user?.fullName || rep.user?.username}
                   </div>
-                  <div className={'text-opacity-80'}>
+                  <div className="opacity-80">
                     {rep.createdAt &&
                       formatDistance(Date.now(), rep.createdAt, {
                         addSuffix: true,
@@ -289,18 +324,24 @@ export const CommentSection = ({
   currentUser,
   galleryId,
   allowUpVote = false,
-  onVoteChange = (change: boolean) => {},
+  onReact = () => {},
 }: CommentProps) => {
   return (
     <MDXProvider
       components={{
         wrapper(props) {
-          return <div style={{ backgroundColor: 'lightblue' }} {...props} />;
+          // Neutral wrapper — no card-wide gradient
+          return (
+            <div
+              className="rounded-md border border-border/60 bg-card/60 p-2"
+              {...props}
+            />
+          );
         },
       }}
     >
       <div
-        className={`max-w-screen-md flex flex-col gap-2 w-full ${className}`}
+        className={`max-w-screen-md flex flex-col gap-4 w-full ${className}`}
       >
         {isMdxEditor && (
           <EditorComment
@@ -322,19 +363,12 @@ export const CommentSection = ({
                 });
               }
             }}
-            onChange={(change: any) => {
-              if (value)
-                onChange(
-                  value.map((f) =>
-                    f.id === e.id
-                      ? {
-                          ...f,
-                          ...change,
-                        }
-                      : f
-                  )
-                );
-            }}
+          onChange={(change: any) => {
+            if (value)
+              onChange(
+                value.map((f) => (f.id === e.id ? { ...f, ...change } : f))
+              );
+          }}
             onDelete={() => {
               onChange(value.filter((f) => f.id !== e.id));
             }}
@@ -342,7 +376,9 @@ export const CommentSection = ({
             key={e.id}
             allowUpVote={allowUpVote}
             theme={theme}
-            onVoteChange={onVoteChange}
+            onReact={(type, nextSelected) =>
+              onReact(e.id, type, nextSelected)
+            }
           />
         ))}
       </div>

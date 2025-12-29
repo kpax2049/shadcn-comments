@@ -14,7 +14,7 @@ export function DropdownMenu({
   deleteComment: () => void;
   currentUser?: User;
 }) {
-  const ref = useRef<any>();
+  const ref = useRef<any>(null);
   const [open, setOpen] = useState(false);
 
   const copyToClipboard = async () => {

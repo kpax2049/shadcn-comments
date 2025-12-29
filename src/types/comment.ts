@@ -61,7 +61,7 @@ export interface Comment {
   text: string;
   galleryId: number;
   selectedActions?: ACTIONS_TYPE[];
-  actions: { [key in ACTIONS_TYPE]: number };
+  actions?: { [key in ACTIONS_TYPE]: number };
 }
 export interface CreateCommentRequest {
   text: string;
