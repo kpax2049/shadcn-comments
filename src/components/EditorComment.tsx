@@ -34,11 +34,22 @@ interface EditorCommentProps {
   currentUser?: User;
 }
 
-function initials(name?: string) {
-  if (!name) return '?';
-  const parts = name.trim().split(/\s+/);
-  return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase();
-}
+const getInitials = (
+  user?: Pick<User, 'fullName' | 'username'>,
+  fallbackName?: string
+) => {
+  const name = user?.fullName || user?.username || fallbackName || '';
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const letters = parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || '')
+    .join('');
+
+  if (letters) return letters;
+
+  const fallback = (fallbackName ?? '').trim();
+  return fallback ? fallback.slice(0, 2).toUpperCase() : '?';
+};
 
 export const EditorComment = ({
   value = '',
@@ -55,13 +66,16 @@ export const EditorComment = ({
   }, [value]);
 
   const currentName = currentUser?.fullName || currentUser?.username || 'You';
+  const initials = getInitials(currentUser, currentName);
 
   return (
     <div className="editor-content-container flex w-full flex-col gap-2">
       <div className="flex w-full gap-3">
         <Avatar className="h-8 w-8 ring-1 ring-border/60">
           <AvatarImage src={currentUser?.profile?.avatarUrl} />
-          <AvatarFallback>{initials(currentName)}</AvatarFallback>
+          <AvatarFallback className="bg-[linear-gradient(to_bottom,#4967ff,#2ecaff)] text-white text-xs font-medium uppercase">
+            {initials}
+          </AvatarFallback>
         </Avatar>
 
         <div className="w-full flex-1">

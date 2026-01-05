@@ -19,6 +19,23 @@ import { DropdownMenu } from './DropdownMenu';
 import { EditingEditorComment } from './EditingEditorComment';
 import { User } from '../types/user';
 
+const getInitials = (
+  user?: Pick<User, 'fullName' | 'username'>,
+  fallbackName?: string
+) => {
+  const name = user?.fullName || user?.username || fallbackName || '';
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const letters = parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || '')
+    .join('');
+
+  if (letters) return letters;
+
+  const fallback = (fallbackName ?? '').trim();
+  return fallback ? fallback.slice(0, 2).toUpperCase() : '?';
+};
+
 interface CommentProps {
   className?: string;
   isMdxEditor?: boolean;
@@ -70,6 +87,11 @@ export const CommentCard = ({
     return count > 0;
   });
 
+  const author = comment.user;
+  const authorName = author?.fullName || author?.username || 'Unknown user';
+  const authorAvatar = author?.profile?.avatarUrl;
+  const authorInitials = getInitials(author, authorName);
+
   const upvote = (comment.actions ?? {})[ACTIONS_TYPE.UPVOTE];
   const upvoted = comment.selectedActions?.includes(ACTIONS_TYPE.UPVOTE);
 
@@ -77,10 +99,10 @@ export const CommentCard = ({
     <div className="flex flex-col gap-1" id={`comment-${comment.id}`}>
       <div className="flex gap-4">
         <Avatar className="w-[32px] h-[32px] ring-1 ring-border/60 overflow-hidden">
-          <AvatarImage src={currentUser?.profile?.avatarUrl} />
+          <AvatarImage src={authorAvatar} />
           {/* Gradient background for initials */}
           <AvatarFallback className="bg-[linear-gradient(to_bottom,#4967ff,#2ecaff)] text-white font-medium">
-            GB
+            {authorInitials}
           </AvatarFallback>
         </Avatar>
 
@@ -92,7 +114,7 @@ export const CommentCard = ({
               <div className="flex items-center gap-2">
                 {/* Author (NO underline now) */}
                 <span className="inline-block font-semibold tracking-tight">
-                  {comment.user?.fullName || comment.user?.username}
+                  {authorName}
                 </span>
 
                 {comment.createdAt && (
@@ -277,36 +299,44 @@ export const CommentCard = ({
       {/* Replies */}
       {comment.replies && comment.replies.length > 0 ? (
         <div className="ml-[48px] flex flex-col gap-3 border-l-2 border-dashed border-border/60 pl-3 md:pl-4">
-          {comment.replies.map((rep) => (
-            <div className="w-full flex gap-2 relative" key={rep.id}>
-              {/* subtle neutral dot */}
-              <span className="absolute -left-[9px] top-3 hidden h-2 w-2 rounded-full bg-border md:block" />
-              <Avatar className="w-[28px] h-[28px] text-sm ring-1 ring-border/60 overflow-hidden">
-                <AvatarImage src={currentUser?.profile?.avatarUrl} />
-                {/* Gradient initials in replies too */}
-                <AvatarFallback className="bg-[linear-gradient(to_bottom,#4967ff,#2ecaff)] text-white font-medium">
-                  GB
-                </AvatarFallback>
-              </Avatar>
+          {comment.replies.map((rep) => {
+            const replyUser = rep.user;
+            const replyAvatar = replyUser?.profile?.avatarUrl;
+            const replyName =
+              replyUser?.fullName || replyUser?.username || 'Unknown user';
+            const replyInitials = getInitials(replyUser, replyName);
 
-              <div className="flex flex-col">
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  {rep.text}
-                </div>
-                <div className="inline-flex gap-2 text-xs text-muted-foreground">
-                  <div className="font-medium text-foreground/90">
-                    {rep.user?.fullName || rep.user?.username}
+            return (
+              <div className="w-full flex gap-2 relative" key={rep.id}>
+                {/* subtle neutral dot */}
+                <span className="absolute -left-[9px] top-3 hidden h-2 w-2 rounded-full bg-border md:block" />
+                <Avatar className="w-[28px] h-[28px] text-sm ring-1 ring-border/60 overflow-hidden">
+                  <AvatarImage src={replyAvatar} />
+                  {/* Gradient initials in replies too */}
+                  <AvatarFallback className="bg-[linear-gradient(to_bottom,#4967ff,#2ecaff)] text-white font-medium">
+                    {replyInitials}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="flex flex-col">
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    {rep.text}
                   </div>
-                  <div className="opacity-80">
-                    {rep.createdAt &&
-                      formatDistance(Date.now(), rep.createdAt, {
-                        addSuffix: true,
-                      })}
+                  <div className="inline-flex gap-2 text-xs text-muted-foreground">
+                    <div className="font-medium text-foreground/90">
+                      {rep.user?.fullName || rep.user?.username}
+                    </div>
+                    <div className="opacity-80">
+                      {rep.createdAt &&
+                        formatDistance(Date.now(), rep.createdAt, {
+                          addSuffix: true,
+                        })}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : null}
     </div>
